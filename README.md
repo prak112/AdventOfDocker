@@ -77,3 +77,52 @@
 <hr>
 </br>
 
+
+## Docker Networking
+
+- To create a new network :
+
+```pwsh
+  #SYNTAX : docker network create <NETWORK_NAME>
+  docker network create myapp-network
+```
+
+- Multiple containers can be labeled and run within the same network. This also allows communication between these containers through HTTP by using container name in the URL.
+
+```pwsh
+  #SYNTAX : docker run -d --name <CONTAINER_NAME> --network <NETWORK_NAME> <IMAGE_NAME>
+  docker run -d --name api --network myapp-network
+
+  #SYNTAX for example: to tunnel host an API : 
+  # docker run -d --name <CONTAINER_NAME> --network <NETWORK_NAME> nginx 
+  docker run -d --name frontend --network myapp-netowork nginx:latest
+
+  # execute communication between containers through HTTP using hostnames
+  docker exec -it curl http://api:8080
+```
+
+- Custom hostnames can be set instead of using container names :
+
+```pwsh
+  docker run --name api --hostname custom-api --network myapp-network <IMAGE_NAME>
+```
+
+- The hostnames can be verified after running the container from within :
+
+```pwsh
+  docker exec -it api hostname
+  # returns custom-api
+```
+
+
+### Network Types 
+- Docker supports several network types:
+
+  - `bridge`: The default network driver. Good for containers on a single host (used above)
+  - `host`: Removes network isolation, container uses host’s network directly
+  - `none`: Disables networking completely
+  - `overlay`: For connecting containers across multiple Docker hosts
+  - `macvlan`: Assigns a MAC address to containers, making them appear as physical devices
+
+- [Official Documentation about Networking](https://docs.docker.com/network/drivers/)
+
