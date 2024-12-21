@@ -1,0 +1,16 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SECRET_MESSAGE=Hello Docker-Compose! This is unreal!!
+      - PORT=8080
+    volumes:
+      - app-data:/data
+    networks:
+      - app-network
+volumes:
+  app-data:
+networks:
+  app-network:
