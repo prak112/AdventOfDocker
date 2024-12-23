@@ -148,3 +148,45 @@
 
 - [Official Documentation about Networking](https://docs.docker.com/network/drivers/)
 
+
+<hr>
+</br>
+
+
+## Docker Compose
+- To define and run multiple containers involved in running an application (such as web-client, mobile-client, server, admin) Docker Compose is used. 
+
+- Docker Compose YAML file, `docker-compose.yaml` defined at the root of the project hosting repositiory which defines the `services` involved such as `client`, `server`, `api` 
+- Also, Ports mapping, Networks or Volumes created in the containers can be defined in the `docker-compose.yaml`
+
+- Docker Compose will automatically map the ports, create networks, create volumes, build image and run container as specified in `Dockerfile` image configuration of the service.
+
+### Example
+- In the case of **ICD Symptom Checker** application, it consists of :
+  - *Web Client*
+  - *Mobile Client*
+  - *NodeJS Server*
+  - *Blazor Admin Client*
+
+- Each of these repositories at their root directories will have their own `Dockerfile` to configure the Docker Image.
+- Finally, the hosting repository, *ICD Symptom Checker* will have the `docker-compose.yaml` at its root directory to configure the build and execution of the containers defined above.
+
+
+### Basic Docker Compose Commands#
+
+- `docker compose up` - Start services
+
+- `docker compose up -d` - Start in detached mode
+
+- `docker compose down` - Stop and remove containers
+
+- `docker compose ps` - List running services
+
+- `docker compose logs` - View service logs
+
+- `docker compose build` - Build or rebuild services
+
+
+<hr>
+</br>
+
