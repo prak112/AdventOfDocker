@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8080:5050"
+    env_file:
+      - .env
+    volumes:
+      - mydata:/data
+    networks:
+      - myapp-network
+    develop:
+      watch:
+        - path: ./
+          action: rebuild
+volumes:
+  mydata:
+networks:
+  myapp-network:
