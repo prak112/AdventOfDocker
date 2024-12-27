@@ -3,12 +3,13 @@
 - Amazing resource! Amazing timing! Loving it ALL!
 
 ## Topics
+- [Container vs VMs](#containers-vs-vms)
 
 - [Docker Port Mapping](#docker-port-mapping)
 
 - [Docker Layers](#docker-layers)
 
-- [Docker Volumes]() /*TO BE DOCUMENTED*/
+- [Docker Volumes](#docker-volumes)
 
 - [Passing Arguments](#passing-arguments)
   - [During Runtime](#during-runtime)
@@ -17,12 +18,29 @@
 - [Docker Networking](#docker-networking)
   - [Network Types](#network-types)
 
-- [Docker Compose]() /*TO BE DOCUMENTED*/
+- [Docker Compose](#docker-compose)
+
+- [Multistage Builds]()  /*TO BE DOCUMENTED*/
+
 
 <hr>
 <hr>
 </br>
 
+
+## Containers vs VMs
+- *Containers*
+  - Uses host machine to run applications
+  - Source code is exposed to the host, thus a possible security vulnerability. 
+  - Light-weight software to build and run applications to prevent 'Works-on-my-machine' problems
+
+- *Virtual Machines (VMs)*
+  - Isolates the source code from host
+  - Runs the application in an isolated environment, thus reducing security risk to host.
+  - Heavy on the host machine due to compartmentalized Memory, CPU and Disk usage.
+
+<hr>
+</br>
 
 ## Docker Port Mapping
 
@@ -31,7 +49,7 @@
  - Port hosting location on local server known as `HOST_PORT`
 
 ```pwsh
-  docker run -p HOST_PORT:CONTAINER_PORT IMAGE_NAME
+  docker run -p <HOST_PORT>:<CONTAINER_PORT> <IMAGE_NAME>
 ```
 
 - To bind to a specific interface or hosting location :
@@ -43,7 +61,7 @@
 - To publish all exposed ports on the host :
 
 ```pwsh
-  docker run -P IMAGE_NAME
+  docker run -P <IMAGE_NAME>
 ```
 
 
@@ -65,6 +83,82 @@
 
 <hr>
 </br>
+
+
+## Docker Volumes
+- Containers are stateless or ephemeral, i.e., while running data is written on a temporary layer on top of the container, once it stops the data layer is wiped clean.
+- Volumes are used to store data written on top of a container by mounting the declared volume to a defined path inside the application
+- This can be done during runtime or could be orchestrated using `docker-compose.yaml`
+- This helps the data to persist in the volume even after the container is stopped.
+
+
+- Using docker commands ;
+```pwsh
+  # create volume
+  docker volume create myvolume
+
+  # mount volume on container
+  docker run -p 8080:8080 -v myvolume:/app_data/dir myapp
+
+  # delete volume, if not needed
+  docker volume rm myvolume
+```
+
+- Using Docker Compose, define the YAML file ;
+```yaml
+  services:
+  api:
+    build: .
+    ports:
+      - "8080:5050"
+    env_file:
+      - .env
+    volumes:
+      - mydata:/data
+    networks:
+      - myapp-network
+    develop:
+      watch:
+        - path: ./
+          action: rebuild
+  volumes:
+    mydata:
+  networks:
+    myapp-network:
+```
+
+- Execute the YAML file in docker;
+```pwsh
+  docker compose up
+```
+- For more details, check [Docker Compose](#docker-compose)
+
+
+### Volumes Types
+- *Anonymous Volumes*
+  - Random volume is created and data is written into it. 
+  - Harder to manage but useful for temporary data.
+  
+  ```pwsh
+    docker run -v /app_data/dir myapp
+  ```
+
+- *Managed Volumes*
+  - These are the volumes discussed above, where a volume is labelled and addressed specifically to mount onto the container for storing data
+
+- *Bind Mounts*
+  - Mounts host machine directory onto the container.
+  - Recommended for development purposes for sharing information between Host and Container, such as:
+    - Source code,
+    - Configuration files,
+    - Generate files
+
+  ```pwsh
+    # docker run -v <HOST_PATH>:<CONTAINER_PATH> <IMAGE_NAME>
+    docker run -v D:/Projects/project1/app/info.txt:/info.txt myapp
+  ```
+
+  - Read [Docker docs](https://docs.docker.com/engine/storage/bind-mounts/) for more variations on Bind Mounts.
 
 
 ## Passing Arguments
